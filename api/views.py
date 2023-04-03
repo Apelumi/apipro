@@ -2,6 +2,7 @@ from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from rest_framework import status
 from django.contrib.auth import authenticate, login, logout
+from django.views.decorators.csrf import csrf_exempt
 from .serializers import UserSerializer
 from .models import User
 
@@ -13,30 +14,14 @@ def user_signup(request):
         return Response({"message": "User created successfully."}, status=status.HTTP_201_CREATED)
     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-
+@csrf_exempt
 @api_view(['POST', 'GET'])
 def user_login(request):
     email = request.data.get('email')
     password = request.data.get('password')
+    print(email,password,'seyi')
     user = authenticate(request=request, email=email, password=password, backend=None)
-    users= User.objects.all()
-    for users in users:
-        print(users)
-    print(password)
-    print(email)
-    print(user)
-
-    def authenticate_user(email, password):
-        try:
-            user = User.objects.get(email=email)
-            if user.check_password(password):
-                return user
-        except User.DoesNotExist:
-            pass
-
-        return None
-    userss = authenticate_user("look@gmail.com", "0101")
-    print(userss)
+    
     if user is not None:
         login(request, user)
         serializer = UserSerializer(user)
@@ -50,9 +35,6 @@ def user_login(request):
         elif not user.check_password(password):
             error_message = 'Incorrect password'
     return Response({'error': error_message}, status=status.HTTP_400_BAD_REQUEST)
-    # return Response({'error': 'Invalid credentials'}, status=status.HTTP_400_BAD_REQUEST)
-    # data['user']=user
-    # return data
 
 
 @api_view(['POST', 'GET'])
