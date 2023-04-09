@@ -10,6 +10,8 @@ python = "^3.9"
 Django = "^4.2"
 django-rest = "^0.8.7"
 djangorestframework = "^3.14.0"
+django-extensions = "^3.2.1"
+ipython = "^8.12.0"
 
 
 
